@@ -1,0 +1,20 @@
+{
+    "name": "huanghantao/sw-fastfdfs-client",
+    "description":  "a fastdfs client base on swoole",
+    "authors": [
+        {
+            "name": "codinghuang",
+            "email": "2812240764@qq.com",
+            "homepage": "https://github.com/huanghantao",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Codinghuang\\SwFastDFSClient\\": "src/"
+        }
+    }
+}
