@@ -26,4 +26,14 @@ class Client
     {
         return $this->tracker->connect();
     }
+
+    public function uploadFile($pathToFile)
+    {
+        return $this->tracker->queryStorageStorWithGroup($this->config['group']);
+    }
+
+    public function send($data)
+    {
+        return $this->tracker->send($data);
+    }
 }
