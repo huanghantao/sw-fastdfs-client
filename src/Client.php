@@ -14,10 +14,10 @@ class Client
     {
         $this->config = $config;
         if (!isset($config) || !isset($config['host'])) {
-            $this->config['host'] = Client::DEFAULT_HOST;
+            $this->config['host'] = SELF::DEFAULT_HOST;
         }
         if (!isset($config) || !isset($config['port'])) {
-            $this->config['port'] = Client::DEFAULT_PORT;
+            $this->config['port'] = SELF::DEFAULT_PORT;
         }
         $this->tracker = new Tracker($this->config['host'], $this->config['port']);
     }
