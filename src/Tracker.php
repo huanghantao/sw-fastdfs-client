@@ -13,9 +13,17 @@ class Tracker extends Base
                 Protocol::GROUP_NAME_MAX_LEN
         );
         $reqBody = self::padding($groupName, Protocol::GROUP_NAME_MAX_LEN);
-        $this->send($reqHeader . $reqBody);
+        if ($this->send($reqHeader . $reqBody) === false) {
+            return false;
+        }
         $resHeader = $this->read(Protocol::HEADER_LENGTH);
+        if ($reqHeader === false) {
+            return false;
+        }
         $resInfo = SELF::parseHeader($resHeader);
+        if ($resInfo === false) {
+            return false;
+        }
         var_dump($resInfo);
         exit;
     }

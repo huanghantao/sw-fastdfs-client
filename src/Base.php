@@ -114,6 +114,10 @@ class Base
     public function read($length)
     {
         $data = $this->client->recv($length);
+        if ($data === false) {
+            Error::$errMsg = "[{$this->client->errCode}]: send data failed.";
+            return false;
+        }
         return $data;
     }
 
