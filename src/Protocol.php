@@ -42,4 +42,5 @@ class Protocol
     const TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ALL = 107;
     const TRACKER_PROTO_CMD_RESP = 100;
     const GROUP_NAME_MAX_LEN = 16;
+    const HEADER_LENGTH = 10;
 }

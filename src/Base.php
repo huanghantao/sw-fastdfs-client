@@ -102,12 +102,17 @@ class Base
 
     public function send($data)
     {
-        var_dump($data);
         $res = $this->client->send($data);
         if ($res === false) {
             Error::$errMsg = "[{$this->client->errCode}]: send data failed.";;
             return false;
         }
         return true;
+    }
+
+    public function read($length)
+    {
+        $data = $this->client->recv($length);
+        return $data;
     }
 }
