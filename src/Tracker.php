@@ -15,7 +15,8 @@ class Tracker extends Base
         $reqBody = self::padding($groupName, Protocol::GROUP_NAME_MAX_LEN);
         $this->send($reqHeader . $reqBody);
         $resHeader = $this->read(Protocol::HEADER_LENGTH);
-        var_dump($resHeader);
+        $resInfo = SELF::parseHeader($resHeader);
+        var_dump($resInfo);
         exit;
     }
 }

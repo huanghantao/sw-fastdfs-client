@@ -31,9 +31,4 @@ class Client
     {
         return $this->tracker->queryStorageStorWithGroup($this->config['group']);
     }
-
-    public function send($data)
-    {
-        return $this->tracker->send($data);
-    }
 }
