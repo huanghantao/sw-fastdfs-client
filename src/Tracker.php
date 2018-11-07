@@ -34,7 +34,7 @@ class Tracker extends Base
         // response format |groupName(16)+ipAddr(15)+port(8)+storePathIndex(1)|
         $resBody = $this->read($resInfo['bodyLength']);
         $buffer = new Buffer();
-        $buffer->writeToBuffer($resBody);
+        $buffer->writeToBuffer($resBody, $resInfo['bodyLength']);
         $groupName = trim($buffer->readFromBuffer(Protocol::GROUP_NAME_MAX_LEN));
         $storageAddr = trim($buffer->readFromBuffer(Protocol::IP_ADDRESS_LEN));
         $storagePort = $buffer->unpackFromBuffer('N2', Protocol::PROTO_PKG_LEN)[2];
