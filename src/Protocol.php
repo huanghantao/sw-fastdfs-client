@@ -43,4 +43,5 @@ class Protocol
     const TRACKER_PROTO_CMD_RESP = 100;
     const GROUP_NAME_MAX_LEN = 16;
     const HEADER_LENGTH = 10;
+    const IP_ADDRESS_MAX_LEN = 15;
 }

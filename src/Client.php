@@ -29,6 +29,6 @@ class Client
 
     public function uploadFile($pathToFile)
     {
-        return $this->tracker->queryStorageStorWithGroup($this->config['group']);
+        return $this->tracker->queryStorageWithGroup($this->config['group']);
     }
 }
