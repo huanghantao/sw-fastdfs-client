@@ -4,6 +4,7 @@ namespace Codinghuang\SwFastDFSClient;
 
 use Codinghuang\SwFastDFSClient\Protocol;
 use Codinghuang\SwFastDFSClient\Error;
+use Codinghuang\SwFastDFSClient\Buffer;
 
 class Tracker extends Base
 {
@@ -26,15 +27,23 @@ class Tracker extends Base
             return false;
         }
         if ($resInfo['status'] !== 0) {
-            Error::$errMsg = 'tracker server returned the wrong status value';
+            Error::$errMsg = "receive header error {$resInfo['status']}";
             return false;
         }
 
+        // response format |groupName(16)+ipAddr(15)+port(8)+storePathIndex(1)|
         $resBody = $this->read($resInfo['bodyLength']);
-        $groupName = trim(substr($resBody, 0, Protocol::GROUP_NAME_MAX_LEN));
-        $storageAddr = trim(substr($resBody, Protocol::GROUP_NAME_MAX_LEN, Protocol::IP_ADDRESS_MAX_LEN));
-        var_dump($groupName);
-        var_dump($storageAddr);
-        exit;
+        $buffer = new Buffer();
+        $buffer->writeToBuffer($resBody);
+        $groupName = trim($buffer->readFromBuffer(Protocol::GROUP_NAME_MAX_LEN));
+        $storageAddr = trim($buffer->readFromBuffer(Protocol::IP_ADDRESS_LEN));
+        $storagePort = $buffer->unpackFromBuffer('N2', Protocol::PROTO_PKG_LEN)[2];
+        $storageIndex = ord($buffer->readFromBuffer(Protocol::STORE_PATH_INDEX));
+        return [
+            $groupName,
+            $storageAddr,
+            $storagePort,
+            $storageIndex
+        ];
     }
 }
