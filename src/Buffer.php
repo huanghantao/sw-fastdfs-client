@@ -23,21 +23,21 @@ class Buffer
 
     public function readFromBuffer($len)
     {
-        if ($this->position + $len > $size) {
-            $res = substr($this->buffer, $this->position, $len);
-            $this->position += $len;
-            return $res;
+        if ($this->position + $len > $this->size) {
+            return false;
         }
-        return false;
+        $res = substr($this->buffer, $this->position, $len);
+        $this->position += $len;
+        return $res;
     }
 
     public function unpackFromBuffer($format, $len)
     {
-        if ($this->position + $len > $size) {
-            $res = unpack($format, substr($this->buffer, $this->position, $len));
-            $this->position += $len;
-            return $res;
+        if ($this->position + $len > $this->size) {
+            return false;
         }
-        return false;
+        $res = unpack($format, substr($this->buffer, $this->position, $len));
+        $this->position += $len;
+        return $res;
     }
 }
