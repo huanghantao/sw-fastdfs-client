@@ -41,7 +41,7 @@ class Storage extends Base
         $responseHeader = $this->read(Protocol::HEADER_LENGTH);
         $responseInfo = self::parseHeader($responseHeader);
         if ($responseInfo['status'] !== 0) {
-            Error::$errMsg = "receive header error {$resInfo['status']}";
+            Error::$errMsg = "Error: receive response status code {$responseInfo['status']}";
             return false;
         }
         $responseBody = $this->read($responseInfo['bodyLength']);
