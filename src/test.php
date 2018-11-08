@@ -16,4 +16,7 @@ if (!$client->connect()) {
 }
 
 $res = $client->uploadFile('test.txt');
+if (!$res) {
+    print_r(Error::$errMsg . PHP_EOL);
+}
 print_r($res);
