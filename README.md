@@ -12,7 +12,7 @@ composer require huanghantao/sw-fastfdfs-client
 
 ## Usage
 
-### uploadfile
+### upload file
 
 ```php
 <?php
