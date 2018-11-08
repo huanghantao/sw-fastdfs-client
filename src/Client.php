@@ -38,6 +38,6 @@ class Client
         if (!$this->storage->connect()) {
             return false;
         }
-        return $this->storage->uploadFile($storageInfo['storageIndex'], 'test.txt');
+        return $this->storage->uploadFile($storageInfo['storageIndex'], $pathToFile);
     }
 }
