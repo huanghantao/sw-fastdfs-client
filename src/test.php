@@ -13,10 +13,12 @@ $config = [
 $client = new Client($config);
 if (!$client->connect()) {
     print_r(Error::$errMsg . PHP_EOL);
+    exit;
 }
 
 $res = $client->uploadFile('test.txt');
 if (!$res) {
     print_r(Error::$errMsg . PHP_EOL);
+    exit;
 }
 print_r($res);
