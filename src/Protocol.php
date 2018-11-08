@@ -46,4 +46,6 @@ class Protocol
     const IP_ADDRESS_LEN = 15;
     const PROTO_PKG_LEN = 8;
     const STORE_PATH_INDEX = 1;
+    const FDFS_FILE_EXT_NAME_MAX_LEN = 6;
+    const STORAGE_PROTO_CMD_UPLOAD_FILE = 11;
 }

@@ -215,4 +215,14 @@ class Base
 
         return $h.$l;
     }
+
+    public function sendfile($pathToFile)
+    {
+        $res = $this->client->sendfile($pathToFile);
+        if ($res === false) {
+            Error::$errMsg = "[{$this->client->errCode}]: send data failed.";
+            return false;
+        }
+        return true;
+    }
 }

@@ -40,10 +40,10 @@ class Tracker extends Base
         $storagePort = $buffer->unpackFromBuffer('N2', Protocol::PROTO_PKG_LEN)[2];
         $storageIndex = ord($buffer->readFromBuffer(Protocol::STORE_PATH_INDEX));
         return [
-            $groupName,
-            $storageAddr,
-            $storagePort,
-            $storageIndex
+            'groupName' => $groupName,
+            'storageAddr' => $storageAddr,
+            'storagePort' => $storagePort,
+            'storageIndex' => $storageIndex
         ];
     }
 }

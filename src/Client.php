@@ -8,6 +8,7 @@ class Client
     const DEFAULT_PORT = 22122;
 
     private $tracker;
+    private $storage;
     private $config;
 
     public function __construct(array $config = null)
@@ -29,6 +30,14 @@ class Client
 
     public function uploadFile($pathToFile)
     {
-        return $this->tracker->queryStorageWithGroup($this->config['group']);
+        $storageInfo = $this->tracker->queryStorageWithGroup($this->config['group']);
+        if ($storageInfo === false) {
+            return false;
+        }
+        $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+        if (!$this->storage->connect()) {
+            return false;
+        }
+        return $this->storage->uploadFile($storageInfo['storageIndex'], 'test.txt');
     }
 }
