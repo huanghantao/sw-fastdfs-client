@@ -27,7 +27,7 @@ class Tracker extends Base
             return false;
         }
         if ($resInfo['status'] !== 0) {
-            Error::$errMsg = "receive header error {$resInfo['status']}";
+            Error::$errMsg = "Error: receive response status code {$resInfo['status']}";
             return false;
         }
 
