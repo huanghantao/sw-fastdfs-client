@@ -48,10 +48,10 @@ class Storage extends Base
         $buffer = new Buffer();
         $buffer->writeToBuffer($responseBody, $responseInfo['bodyLength']);
         $groupName = trim($buffer->readFromBuffer(Protocol::GROUP_NAME_MAX_LEN));
-        $filePath = trim($buffer->readFromBuffer($responseInfo['bodyLength'] - Protocol::GROUP_NAME_MAX_LEN));
+        $remoteFileId = trim($buffer->readFromBuffer($responseInfo['bodyLength'] - Protocol::GROUP_NAME_MAX_LEN));
         return [
             'groupName' => $groupName,
-            'filePath'  => $filePath,
+            'remoteFileId'  => $remoteFileId,
         ];
     }
 }
