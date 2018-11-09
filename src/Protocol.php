@@ -4,8 +4,16 @@ namespace Codinghuang\SwFastDFSClient;
 
 class Protocol
 {
-    const TRACKER_PROTO_CMD_STORAGE_JOIN = 81;
+    const GROUP_NAME_MAX_LEN = 16;
+    const HEADER_LENGTH = 10;
+    const IP_ADDRESS_LEN = 15;
+    const PROTO_PKG_LEN = 8;
+    const STORE_PATH_INDEX = 1;
+    const FDFS_FILE_EXT_NAME_MAX_LEN = 6;
+
     const FDFS_PROTO_CMD_QUIT = 82;
+
+    const TRACKER_PROTO_CMD_STORAGE_JOIN = 81;
     const TRACKER_PROTO_CMD_STORAGE_BEAT = 83; // storage heart beat
     const TRACKER_PROTO_CMD_STORAGE_REPORT_DISK_USAGE = 84; // report disk usage
     const TRACKER_PROTO_CMD_STORAGE_REPLICA_CHG = 85; // repl new storage servers
@@ -21,7 +29,6 @@ class Protocol
     const TRACKER_PROTO_CMD_STORAGE_REPORT_TRUNK_FREE = 74; // storage report trunk free space
     const TRACKER_PROTO_CMD_STORAGE_REPORT_TRUNK_FID = 73; // storage report current trunk file id
     const TRACKER_PROTO_CMD_STORAGE_FETCH_TRUNK_FID = 72; // storage get current trunk file id
-
     const TRACKER_PROTO_CMD_TRACKER_GET_SYS_FILES_START = 61; // start of tracker get system data files
     const TRACKER_PROTO_CMD_TRACKER_GET_SYS_FILES_END = 62; // end of tracker get system data files
     const TRACKER_PROTO_CMD_TRACKER_GET_ONE_SYS_FILE = 63; // tracker get a system data file
@@ -41,11 +48,7 @@ class Protocol
     const TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITHOUT_GROUP_ALL = 106;
     const TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ALL = 107;
     const TRACKER_PROTO_CMD_RESP = 100;
-    const GROUP_NAME_MAX_LEN = 16;
-    const HEADER_LENGTH = 10;
-    const IP_ADDRESS_LEN = 15;
-    const PROTO_PKG_LEN = 8;
-    const STORE_PATH_INDEX = 1;
-    const FDFS_FILE_EXT_NAME_MAX_LEN = 6;
+
     const STORAGE_PROTO_CMD_UPLOAD_FILE = 11;
+    const STORAGE_PROTO_CMD_DELETE_FILE = 12;
 }

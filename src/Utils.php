@@ -133,9 +133,15 @@ class Utils
 
     public static function splitRemoteFileId($remoteFileId)
     {
-        $res = explode('/', $remoteFileId, 2);
-        print_r($res);
-        exit;
+        $tmp = explode('/', $remoteFileId, 2);
+        if (count($tmp) < 2) {
+            Error::$errMsg = 'Error remoteFileId';
+            return false;
+        }
+        return [
+            'groupName' => $tmp[0],
+            'remoteFilename' => $tmp[1]
+        ];
     }
 
     public static function buildHeader($protoCmd, $length = 0)

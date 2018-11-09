@@ -34,8 +34,7 @@ class Storage extends Base
         if ($this->send($requestHeader . $requestBody) === false) {
             return false;
         }
-        $res = $this->sendfile($filename);
-        if ($res === false) {
+        if ($this->sendfile($filename) === false) {
             return false;
         }
         $responseHeader = $this->read(Protocol::HEADER_LENGTH);
@@ -48,10 +47,27 @@ class Storage extends Base
         $buffer = new Buffer();
         $buffer->writeToBuffer($responseBody, $responseInfo['bodyLength']);
         $groupName = trim($buffer->readFromBuffer(Protocol::GROUP_NAME_MAX_LEN));
-        $remoteFileId = trim($buffer->readFromBuffer($responseInfo['bodyLength'] - Protocol::GROUP_NAME_MAX_LEN));
-        return [
-            'groupName' => $groupName,
-            'remoteFileId'  => $remoteFileId,
-        ];
+        $remoteFilename = trim($buffer->readFromBuffer($responseInfo['bodyLength'] - Protocol::GROUP_NAME_MAX_LEN));
+        $remoteFileId = $groupName . '/' . $remoteFilename;
+        return $remoteFileId;
+    }
+
+    public function deleteFile($groupName, $remoteFilename)
+    {
+        $remoteFilenameLen = strlen($remoteFilename);
+        $requestBodyLength = Protocol::GROUP_NAME_MAX_LEN + $remoteFilenameLen;
+        $requestHeader = Utils::buildHeader(Protocol::STORAGE_PROTO_CMD_DELETE_FILE, $requestBodyLength);
+        $requestBody = Utils::padding($groupName, Protocol::GROUP_NAME_MAX_LEN);
+        $requestBody .= Utils::padding($remoteFilename, $remoteFilenameLen);
+        if ($this->send($requestHeader . $requestBody) === false) {
+            return false;
+        }
+        $responseHeader = $this->read(Protocol::HEADER_LENGTH);
+        $responseInfo = Utils::parseHeader($responseHeader);
+        if ($responseInfo['status'] !== 0) {
+            Error::$errMsg = "Error: receive response status code {$responseInfo['status']}";
+            return false;
+        }
+        return true;
     }
 }

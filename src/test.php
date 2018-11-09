@@ -16,15 +16,16 @@ if (!$client->connect()) {
     exit;
 }
 
-$res = $client->uploadFile('test.txt');
-if (!$res) {
+$remoteFileId = $client->uploadFile('test.txt');
+if (!$remoteFileId) {
     print_r(Error::$errMsg . PHP_EOL);
     exit;
 }
-print_r($res);
+print_r($remoteFileId . PHP_EOL);
 
-$res = $client->deleteFile($res['remoteFileId']);
+$res = $client->deleteFile($remoteFileId);
 if (!$res) {
     print_r(Error::$errMsg . PHP_EOL);
     exit;
 }
+print_r('删除文件成功' . PHP_EOL);

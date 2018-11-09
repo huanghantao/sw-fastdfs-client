@@ -85,13 +85,11 @@ class Tracker extends Base
         $storageAddr = trim($buffer->readFromBuffer(Protocol::IP_ADDRESS_LEN));
         $storagePort = $buffer->unpackFromBuffer('N2', Protocol::PROTO_PKG_LEN)[2];
         $storageIndex = ord($buffer->readFromBuffer(Protocol::STORE_PATH_INDEX));
-        print_r(
-            [
-                'groupName' => $groupName,
-                'storageAddr' => $storageAddr,
-                'storagePort' => $storagePort,
-                'storageIndex' => $storageIndex
-            ]
-        );
+        return [
+            'groupName' => $groupName,
+            'storageAddr' => $storageAddr,
+            'storagePort' => $storagePort,
+            'storageIndex' => $storageIndex
+        ];
     }
 }

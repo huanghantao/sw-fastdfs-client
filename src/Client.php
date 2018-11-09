@@ -2,6 +2,8 @@
 
 namespace Codinghuang\SwFastDFSClient;
 
+use Codinghuang\SwFastDFSClient\Utils;
+
 class Client
 {
     const DEFAULT_HOST = "127.0.0.1";
@@ -43,7 +45,15 @@ class Client
 
     public function deleteFile($remoteFileId)
     {
-        
-        $this->tracker->queryStorageUpdate($this->config['group'], $remoteFileId);
+        $res = Utils::splitRemoteFileId($remoteFileId);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        if ($storageInfo === false) {
+            return false;
+        }
+        $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+        if (!$this->storage->connect()) {
+            return false;
+        }
+        return $this->storage->deleteFile($res['groupName'], $res['remoteFilename']);
     }
 }
