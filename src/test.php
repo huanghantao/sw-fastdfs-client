@@ -22,3 +22,9 @@ if (!$res) {
     exit;
 }
 print_r($res);
+
+$res = $client->deleteFile($res['remoteFileId']);
+if (!$res) {
+    print_r(Error::$errMsg . PHP_EOL);
+    exit;
+}

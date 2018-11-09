@@ -5,7 +5,7 @@ namespace Codinghuang\SwFastDFSClient;
 use Codinghuang\SwFastDFSClient\Protocol;
 use Codinghuang\SwFastDFSClient\Error;
 use Codinghuang\SwFastDFSClient\Buffer;
-use Codinghuang\SwFastDFSClient\Common;
+use Codinghuang\SwFastDFSClient\Utils;
 
 class Storage extends Base
 {
@@ -21,7 +21,7 @@ class Storage extends Base
             return false;
         }
         if ($ext === '') {
-            $ext = $fileInfo['extension'] ?? Common::mineTypeExtension(mime_content_type($filename));
+            $ext = $fileInfo['extension'] ?? Utils::mineTypeExtension(mime_content_type($filename));
         }
 
         $fp = fopen($filename, 'rb');
@@ -29,8 +29,8 @@ class Storage extends Base
         $requestBodyLength = 1 + Protocol::PROTO_PKG_LEN + 
                 Protocol::FDFS_FILE_EXT_NAME_MAX_LEN + $fileSize;
 
-        $requestHeader = self::buildHeader(Protocol::STORAGE_PROTO_CMD_UPLOAD_FILE, $requestBodyLength);
-        $requestBody = pack('C', $storageIndex).self::packU64($fileSize).self::padding($ext, Protocol::FDFS_FILE_EXT_NAME_MAX_LEN);
+        $requestHeader = Utils::buildHeader(Protocol::STORAGE_PROTO_CMD_UPLOAD_FILE, $requestBodyLength);
+        $requestBody = pack('C', $storageIndex).Utils::packU64($fileSize).Utils::padding($ext, Protocol::FDFS_FILE_EXT_NAME_MAX_LEN);
         if ($this->send($requestHeader . $requestBody) === false) {
             return false;
         }
@@ -39,7 +39,7 @@ class Storage extends Base
             return false;
         }
         $responseHeader = $this->read(Protocol::HEADER_LENGTH);
-        $responseInfo = self::parseHeader($responseHeader);
+        $responseInfo = Utils::parseHeader($responseHeader);
         if ($responseInfo['status'] !== 0) {
             Error::$errMsg = "Error: receive response status code {$responseInfo['status']}";
             return false;

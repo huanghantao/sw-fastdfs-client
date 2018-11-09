@@ -40,4 +40,10 @@ class Client
         }
         return $this->storage->uploadFile($storageInfo['storageIndex'], $pathToFile);
     }
+
+    public function deleteFile($remoteFileId)
+    {
+        
+        $this->tracker->queryStorageUpdate($this->config['group'], $remoteFileId);
+    }
 }
