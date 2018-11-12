@@ -70,4 +70,14 @@ class Storage extends Base
         }
         return true;
     }
+
+    public function appendFile($content, $remoteFilename)
+    {
+        $remoteFilenameLen = strlen($remoteFilename);
+        $contentLen = strlen($content);
+        $requestBodyLength = (2 * Protocol::PROTO_PKG_LEN) + $remoteFilenameLen + $contentLen;
+        $requestHeader = Utils::buildHeader(Protocol::STORAGE_PROTO_CMD_APPEND_FILE, $requestBodyLength);
+        $requestBody = pack('x4N', $remoteFilenameLen).self::packU64($contentLen).$remoteFilename.$content;
+        $this->send($requestHeader . $requestBody);
+    }
 }

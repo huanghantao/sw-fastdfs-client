@@ -56,4 +56,18 @@ class Client
         }
         return $this->storage->deleteFile($res['groupName'], $res['remoteFilename']);
     }
+
+    public function appendFile($content, $remoteFileId)
+    {
+        $res = Utils::splitRemoteFileId($remoteFileId);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        if ($storageInfo === false) {
+            return false;
+        }
+        $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+        if (!$this->storage->connect()) {
+            return false;
+        }
+        return $this->storage->appendFile($content, $res['remoteFilename']);
+    }
 }
