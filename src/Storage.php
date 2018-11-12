@@ -77,7 +77,7 @@ class Storage extends Base
         $contentLen = strlen($content);
         $requestBodyLength = (2 * Protocol::PROTO_PKG_LEN) + $remoteFilenameLen + $contentLen;
         $requestHeader = Utils::buildHeader(Protocol::STORAGE_PROTO_CMD_APPEND_FILE, $requestBodyLength);
-        $requestBody = pack('x4N', $remoteFilenameLen).self::packU64($contentLen).$remoteFilename.$content;
+        $requestBody = pack('x4N', $remoteFilenameLen).Utils::packU64($contentLen).$remoteFilename.$content;
         $this->send($requestHeader . $requestBody);
     }
 }
