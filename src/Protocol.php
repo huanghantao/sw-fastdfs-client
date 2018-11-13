@@ -51,5 +51,6 @@ class Protocol
 
     const STORAGE_PROTO_CMD_UPLOAD_FILE = 11;
     const STORAGE_PROTO_CMD_DELETE_FILE = 12;
+    const STORAGE_PROTO_CMD_UPLOAD_APPENDER_FILE = 23; //create appender file
     const STORAGE_PROTO_CMD_APPEND_FILE = 24;
 }

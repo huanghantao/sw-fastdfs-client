@@ -16,21 +16,9 @@ if (!$client->connect()) {
     exit;
 }
 
-$remoteFileId = $client->uploadFile('test.txt');
+$remoteFileId = $client->uploadAppenderFile('test.txt');
 if (!$remoteFileId) {
     print_r(Error::$errMsg . PHP_EOL);
     exit;
 }
 print_r($remoteFileId . PHP_EOL);
-
-$res = $client->appendFile('111', $remoteFileId);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
-}
-
-$res = $client->deleteFile($remoteFileId);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
-    exit;
-}
-print_r('删除文件成功' . PHP_EOL);
