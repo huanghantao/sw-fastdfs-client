@@ -19,13 +19,13 @@ if (!$client->connect()) {
 $remoteFileId = $client->uploadAppenderFile('test.txt');
 if (!$remoteFileId) {
     print_r(Error::$errMsg . PHP_EOL);
-    exit;
+    // Some code that handles errors
 }
 print_r($remoteFileId . PHP_EOL);
 
 $res = $client->appendFile('11', $remoteFileId);
 if (!$res) {
     print_r(Error::$errMsg . PHP_EOL);
-    exit;
+    // Some code that handles errors
 }
 print_r($res . PHP_EOL);

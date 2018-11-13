@@ -30,7 +30,7 @@ class Client
         return $this->tracker->connect();
     }
 
-    public function uploadFile($pathToFile)
+    public function uploadByFilename($pathToFile)
     {
         $storageInfo = $this->tracker->queryStorageWithGroup($this->config['group']);
         if ($storageInfo === false) {
@@ -40,7 +40,7 @@ class Client
         if (!$this->storage->connect()) {
             return false;
         }
-        return $this->storage->uploadFile($storageInfo['storageIndex'], $pathToFile);
+        return $this->storage->uploadByFilename($storageInfo['storageIndex'], $pathToFile);
     }
 
     public function deleteFile($remoteFileId)
