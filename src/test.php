@@ -16,16 +16,16 @@ if (!$client->connect()) {
     exit;
 }
 
-$remoteFileId = $client->uploadAppenderFile('test.txt');
+$remoteFileId = $client->uploadByFilename('test.txt');
 if (!$remoteFileId) {
     print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
+    exit;
 }
 print_r($remoteFileId . PHP_EOL);
 
-$res = $client->appendFile('11', $remoteFileId);
+$res = $client->readFile($remoteFileId, 3, 3);
 if (!$res) {
     print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
+    exit;
 }
-print_r($res . PHP_EOL);
+print_r($res);

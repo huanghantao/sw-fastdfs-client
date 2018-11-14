@@ -83,4 +83,18 @@ class Client
         }
         return $this->storage->appendFile($content, $res['remoteFilename']);
     }
+
+    public function readFile($remoteFileId, $offset = 0, $length = 0)
+    {
+        $res = Utils::splitRemoteFileId($remoteFileId);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        if ($storageInfo === false) {
+            return false;
+        }
+        $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+        if (!$this->storage->connect()) {
+            return false;
+        }
+        return $this->storage->readFile($res['groupName'], $res['remoteFilename'], $offset, $length);
+    }
 }

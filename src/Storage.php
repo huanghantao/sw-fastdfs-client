@@ -93,13 +93,36 @@ class Storage extends Base
         }
         $responseHeader = $this->read(Protocol::HEADER_LENGTH);
         $responseInfo = Utils::parseHeader($responseHeader);
-        print_r($responseInfo);
-        exit;
         if ($responseInfo['status'] !== 0) {
             Error::$errMsg = "Error: receive response status code {$responseInfo['status']}";
             return false;
         }
 
         return true;
+    }
+
+    public function readFile($groupName, $remoteFilename, $offset = 0, $length = 0)
+    {
+        $remoteFilenameLen = strlen($remoteFilename);
+        $requestBodyLen = (2 * Protocol::PROTO_PKG_LEN) + Protocol::GROUP_NAME_MAX_LEN + $remoteFilenameLen;
+
+        $requestHeader = Utils::buildHeader(Protocol::STORAGE_PROTO_CMD_DOWNLOAD_FILE, $requestBodyLen);
+
+        $requestBody = Utils::packU64($offset) . 
+                Utils::packU64($length) . 
+                Utils::padding($groupName, Protocol::GROUP_NAME_MAX_LEN) . 
+                $remoteFilename;
+
+        if ($this->send($requestHeader . $requestBody) === false) {
+            return false;
+        }
+
+        $responseHeader = $this->read(Protocol::HEADER_LENGTH);
+        $responseInfo = Utils::parseHeader($responseHeader);
+        if ($responseInfo['status'] !== 0) {
+            Error::$errMsg = "Error: receive response status code {$responseInfo['status']}";
+            return false;
+        }
+        return $this->read($responseInfo['bodyLength']);
     }
 }
