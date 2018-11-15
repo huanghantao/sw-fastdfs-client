@@ -4,6 +4,8 @@ namespace Codinghuang\SwFastDFSClient;
 
 use Codinghuang\SwFastDFSClient\Client;
 use Codinghuang\SwFastDFSClient\Error;
+use Codinghuang\SwFastDFSClient\Storage;
+use Codinghuang\SwFastDFSClient\Tracker;
 
 class TrackerPool
 {
@@ -15,10 +17,17 @@ class TrackerPool
 
     private $serv = null;
     private $logFile = '/tmp/tracker_pool.log';
+    private $tracker = null;
+    private $groupName;
 
     public function __construct($host, $port)
     {
         $this->serv = new \Swoole\Server($host, $port);
+    }
+
+    public function setGroupName($groupName)
+    {
+        $this->groupName = $groupName;
     }
 
     public function setLogFile($pathToFile)
@@ -40,35 +49,35 @@ class TrackerPool
         $this->serv->on('Finish', [$this, 'onFinish']);
     }
 
+    public function connectTrackerServer()
+    {
+        $this->tracker = new Tracker(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT);
+        if (!$this->tracker->connect()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function start()
     {
         $this->init();
+        if (!$this->connectTrackerServer()) {
+            print_r(Error::$errMsg . PHP_EOL);
+        }
         $this->serv->start();
     }
 
     public function onReceive($serv, $fd, $from_id, $data)
     {
-        print_r('Receive: ' . $data);
-        $result = $serv->taskwait($data);
-        $serv->send($fd, $result);
+        $storageInfo = $this->tracker->queryStorageWithGroup($this->groupName);
+        $serv->send($fd, var_export($storageInfo, true));
+        // $result = $serv->taskwait($data);
     }
 
     public function onTask($serv, $task_id, $from_id, $data)
     {
-        static $client = null;
-        static $config = [
-            'host' => SELF::TRACKER_SERVER_HOST,
-            'port' => SELF::TRACKER_SERVER_PORT,
-            'group' => SELF::DEFAULT_GROUP,
-        ];
-
-        if ($client == null) {
-            $client = new Client($config);
-            $client->connect();
-        }
-
-        $res = $client->uploadByFilename('test.txt');
-        return $res;
+        static $storage = null;
     }
 
     public function onFinish($serv, $task_id, $data)
