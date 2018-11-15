@@ -4,5 +4,5 @@ use Codinghuang\SwFastDFSClient\TrackerPool;
 
 require '../vendor/autoload.php';
 
-$pool = new TrackerPool();
+$pool = new TrackerPool('127.0.0.1', 9501);
 $pool->start();
