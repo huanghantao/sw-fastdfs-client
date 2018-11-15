@@ -60,7 +60,7 @@ class TrackerPool
     {
         print_r('Receive: ' . $data);
         $result = $serv->taskwait($data);
-        print_r($result);
+        $serv->send($fd, $result);
     }
 
     public function onTask($serv, $task_id, $from_id, $data)
@@ -76,6 +76,9 @@ class TrackerPool
             $client = new Client($config);
             $client->connect();
         }
+
+        $res = $client->uploadByFilename('test.txt');
+        return $res;
     }
 
     public function onFinish($serv, $task_id, $data)
