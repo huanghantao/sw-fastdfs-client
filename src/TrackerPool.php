@@ -29,7 +29,6 @@ class TrackerPool
     public function setMaxConnectionNum($size)
     {
         $this->_max_pool_size = $size;
-        return $this;
     }
 
     public function setLogFile($pathToFile)
