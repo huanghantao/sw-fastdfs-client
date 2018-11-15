@@ -2,23 +2,23 @@
 
 namespace Codinghuang\SwFastDFSClient;
 
+use Codinghuang\SwFastDFSClient\Client;
+use Codinghuang\SwFastDFSClient\Error;
+
 class TrackerPool
 {
-    const WORKER_NUM = 100;
-    const TASK_WORKER_NUM = 10;
+    const WORKER_NUM = 20;
+    const TASK_WORKER_NUM = 15; // max connection num
+    const DEFAULT_GROUP = 'wechat';
+    const TRACKER_SERVER_HOST = '127.0.0.1';
+    const TRACKER_SERVER_PORT = 22122;
 
     private $serv = null;
-    private $host = '127.0.0.1';
-    private $port = 9501;
-    private $minConnectionNum = 100;
-    private $maxConnectionNum = 150;
     private $logFile = '/tmp/tracker_pool.log';
 
     public function __construct($host, $port)
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->serv = new \Swoole\Server($this->host, $this->port);
+        $this->serv = new \Swoole\Server($host, $port);
     }
 
     public function setMinConnectionNum($size)
@@ -44,6 +44,8 @@ class TrackerPool
             'task_worker_num' => SELF::TASK_WORKER_NUM,
             'log_file' => $this->logFile,
         ]);
+
+        // $this->serv->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->serv->on('Receive', [$this, 'onReceive']);
         $this->serv->on('Task', [$this, 'onTask']);
         $this->serv->on('Finish', [$this, 'onFinish']);
@@ -54,7 +56,7 @@ class TrackerPool
         $this->init();
         $this->serv->start();
     }
-    
+
     public function onReceive($serv, $fd, $from_id, $data)
     {
         print_r('Receive: ' . $data);
@@ -64,8 +66,17 @@ class TrackerPool
 
     public function onTask($serv, $task_id, $from_id, $data)
     {
-        print_r("Tasker进程接收到数据: {$data}");
-        return "finish" . PHP_EOL;
+        static $client = null;
+        static $config = [
+            'host' => SELF::TRACKER_SERVER_HOST,
+            'port' => SELF::TRACKER_SERVER_PORT,
+            'group' => SELF::DEFAULT_GROUP,
+        ];
+
+        if ($client == null) {
+            $client = new Client($config);
+            $client->connect();
+        }
     }
 
     public function onFinish($serv, $task_id, $data)
