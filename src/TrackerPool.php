@@ -21,16 +21,6 @@ class TrackerPool
         $this->serv = new \Swoole\Server($host, $port);
     }
 
-    public function setMinConnectionNum($size)
-    {
-        $this->minConnectionNum = $size;
-    }
-
-    public function setMaxConnectionNum($size)
-    {
-        $this->_max_pool_size = $size;
-    }
-
     public function setLogFile($pathToFile)
     {
         $this->logFile = $pathToFile;
