@@ -1,14 +1,10 @@
 
 
+## connection-pool
+
 ## Description
 
-a fastdfs client base on swoole
-
-## Install
-
-```shell
-composer require huanghantao/sw-fastfdfs-client
-```
+A fastdfs client base on swoole that supports connection pool
 
 ## Usage
 
@@ -22,164 +18,38 @@ use Codinghuang\SwFastDFSClient\Error;
 
 require '../vendor/autoload.php';
 
-/* Tracker server configuration */
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
+$client = new \Swoole\Client(SWOOLE_TCP);
+
+if (!$client->connect('127.0.0.1', 9501))
+{
+    print_r('connect error' . PHP_EOL);
+    exit;
+}
+$data = [
+    'method' => 'setGroupName',
+    'params' => [
+        'wechat'
+    ]
 ];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
+if (!$client->send(json_encode($data))) {
+    print_r('send error' . PHP_EOL);
+    exit;
 }
-
-$remoteFileId = $client->uploadFile('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-/* RemoteFileId is similar to wechat/M00/00/00/wKhgAlvlKAKAaVwdAAAACzYHTOE508.txt */
-print_r($remoteFileId);
-```
-
-### delete file
-
-```php
-<?php
-
-use Codinghuang\SwFastDFSClient\Client;
-use Codinghuang\SwFastDFSClient\Error;
-
-require '../vendor/autoload.php';
-
-/* Tracker server configuration */
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
-];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-
-$remoteFileId = $client->uploadFile('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-$res = $client->deleteFile($remoteFileId);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-print_r('删除文件成功' . PHP_EOL);
-```
-
-### upload appenderFile
-
-**Notice**: you can only use this method to appenderfile type
-
-```php
-<?php
-
-use Codinghuang\SwFastDFSClient\Client;
-use Codinghuang\SwFastDFSClient\Error;
-
-require '../vendor/autoload.php';
-
-/* Tracker server configuration */
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
-];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-
-$remoteFileId = $client->uploadAppenderFile('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-print_r($remoteFileId . PHP_EOL);
-```
-
-### append file
-
-```php
-<?php
-
-use Codinghuang\SwFastDFSClient\Client;
-use Codinghuang\SwFastDFSClient\Error;
-
-require '../vendor/autoload.php';
-
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
-];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-
-$remoteFileId = $client->uploadAppenderFile('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-print_r($remoteFileId . PHP_EOL);
-
-$res = $client->appendFile('11', $remoteFileId);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
+$res = $client->recv(1024);
 print_r($res . PHP_EOL);
-```
 
-### read file
-
-```php
-<?php
-
-use Codinghuang\SwFastDFSClient\Client;
-use Codinghuang\SwFastDFSClient\Error;
-
-require '../vendor/autoload.php';
-
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
+$data = [
+    'method' => 'uploadByFilename',
+    'params' => [
+        'test.txt'
+    ]
 ];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
+if (!$client->send(json_encode($data))) {
+    print_r('send error' . PHP_EOL);
+    exit;
 }
-
-$remoteFileId = $client->uploadByFilename('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-print_r($remoteFileId . PHP_EOL);
-
-$res = $client->readFile($remoteFileId, 3, 3);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
-    // Some code that handles errors
-}
-print_r($res);
+$res = $client->recv(1024);
+print_r($res . PHP_EOL);
 ```
 
 ## Reference
