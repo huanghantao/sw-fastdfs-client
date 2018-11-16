@@ -7,28 +7,22 @@ use Codinghuang\SwFastDFSClient\Error;
 use Codinghuang\SwFastDFSClient\Storage;
 use Codinghuang\SwFastDFSClient\Tracker;
 
-class TrackerPool
+class RPCServer
 {
     const WORKER_NUM = 20;
     const TASK_WORKER_NUM = 15; // max connection num
-    const DEFAULT_GROUP = 'wechat';
     const TRACKER_SERVER_HOST = '127.0.0.1';
     const TRACKER_SERVER_PORT = 22122;
-    const NO_DATA = 'no response';
+    const DEFAULT_GROUP = 'wechat';
+
+    static $client;
 
     private $serv = null;
     private $logFile = '/tmp/tracker_pool.log';
-    private $groupName;
-    private $client;
 
     public function __construct($host, $port)
     {
         $this->serv = new \Swoole\Server($host, $port);
-    }
-
-    public function setGroupName($groupName)
-    {
-        $this->groupName = $groupName;
     }
 
     public function setLogFile($pathToFile)
@@ -52,13 +46,8 @@ class TrackerPool
 
     public function connectTrackerServer()
     {
-        $config = [
-            'host' => SELF::TRACKER_SERVER_HOST,
-            'port' => SELF::TRACKER_SERVER_PORT,
-            'group' => SELF::DEFAULT_GROUP,
-        ];
-        $this->client = new Client($config);
-        if (!$this->client->connect()) {
+        SELF::$client = new Client(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT, SELF::DEFAULT_GROUP);
+        if (!SELF::$client->connect()) {
             return false;
         }
 
@@ -76,17 +65,24 @@ class TrackerPool
 
     public function onReceive($serv, $fd, $from_id, $data)
     {
-        $result = $serv->taskwait($data);
+        $res = $serv->taskwait($data);
+        $serv->send($fd, $res);
     }
 
     public function onTask($serv, $task_id, $from_id, $data)
     {
         $data = json_decode($data, true);
-        $res = call_user_func([&$this->client, $data['method']], 'test.txt');
-        if (!$res) {
-            print_r(Error::$errMsg . PHP_EOL);
+        $content = call_user_func_array([SELF::$client, $data['method']], $data['params']);
+
+        if (!$content) {
+            return Error::$errMsg . PHP_EOL;
         }
-        print_r($res);
+
+        $res = [
+            'length' => strlen($content), 
+            'content' => $content
+        ];
+        return json_encode($res);
     }
 
     public function onFinish($serv, $task_id, $data)
