@@ -70,14 +70,19 @@ class TrackerPool
 
     public function onReceive($serv, $fd, $from_id, $data)
     {
-        $storageInfo = $this->tracker->queryStorageWithGroup($this->groupName);
-        $serv->send($fd, var_export($storageInfo, true));
-        // $result = $serv->taskwait($data);
+        $result = $serv->taskwait($data);
     }
 
     public function onTask($serv, $task_id, $from_id, $data)
     {
         static $storage = null;
+        if ($storage === null) {
+            $storageInfo = $this->tracker->queryStorageWithGroup($this->groupName);
+            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            while (!$storage->connect()) {
+                \Swoole\Coroutine::sleep(2);
+            }
+        }
     }
 
     public function onFinish($serv, $task_id, $data)
