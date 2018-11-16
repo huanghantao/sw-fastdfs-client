@@ -9,7 +9,7 @@ class Client
     const DEFAULT_HOST = "127.0.0.1";
     const DEFAULT_PORT = 22122;
 
-    private $tracker;
+    public static $tracker;
     private $storage;
     private $config;
 
@@ -22,17 +22,17 @@ class Client
         if (!isset($config) || !isset($config['port'])) {
             $this->config['port'] = SELF::DEFAULT_PORT;
         }
-        $this->tracker = new Tracker($this->config['host'], $this->config['port']);
     }
 
     public function connect()
     {
-        return $this->tracker->connect();
+        Client::$tracker = new Tracker($this->config['host'], $this->config['port']);
+        return Client::$tracker->connect();
     }
 
     public function uploadByFilename($pathToFile)
     {
-        $storageInfo = $this->tracker->queryStorageWithGroup($this->config['group']);
+        $storageInfo = Client::$tracker->queryStorageWithGroup($this->config['group']);
         if ($storageInfo === false) {
             return false;
         }
@@ -59,7 +59,7 @@ class Client
 
     public function uploadAppenderFile($pathToFile)
     {
-        $storageInfo = $this->tracker->queryStorageWithGroup($this->config['group']);
+        $storageInfo = Client::$tracker->queryStorageWithGroup($this->config['group']);
         if ($storageInfo === false) {
             return false;
         }
@@ -73,7 +73,7 @@ class Client
     public function appendFile($content, $remoteFileId)
     {
         $res = Utils::splitRemoteFileId($remoteFileId);
-        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        $storageInfo = Client::$tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
@@ -87,7 +87,7 @@ class Client
     public function readFile($remoteFileId, $offset = 0, $length = 0)
     {
         $res = Utils::splitRemoteFileId($remoteFileId);
-        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        $storageInfo = Client::$tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }

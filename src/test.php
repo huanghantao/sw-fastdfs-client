@@ -6,8 +6,8 @@ use Codinghuang\SwFastDFSClient\Error;
 require '../vendor/autoload.php';
 
 $data = [
-    'class' => 'Storage',
-    'method' => 'upload',
+    'class' => 'Client',
+    'method' => 'uploadByFilename',
 ];
 
 $client = new swoole_client(SWOOLE_SOCK_TCP);
