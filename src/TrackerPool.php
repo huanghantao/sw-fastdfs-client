@@ -70,7 +70,13 @@ class TrackerPool
 
     public function onReceive($serv, $fd, $from_id, $data)
     {
-        $result = $serv->taskwait($data);
+        $data = json_decode($data, true);
+        $res = '';
+        if (method_exists($this, $data['method'])) {
+            $res = call_user_func([&$this, $data['method']]);
+        }
+
+        // $result = $serv->taskwait($data);
     }
 
     public function onTask($serv, $task_id, $from_id, $data)

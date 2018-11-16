@@ -5,27 +5,21 @@ use Codinghuang\SwFastDFSClient\Error;
 
 require '../vendor/autoload.php';
 
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 22122,
-    'group' => 'wechat'
+$data = [
+    'class' => 'Storage',
+    'method' => 'upload',
 ];
-$client = new Client($config);
-if (!$client->connect()) {
-    print_r(Error::$errMsg . PHP_EOL);
-    exit;
-}
 
-$remoteFileId = $client->uploadByFilename('test.txt');
-if (!$remoteFileId) {
-    print_r(Error::$errMsg . PHP_EOL);
-    exit;
-}
-print_r($remoteFileId . PHP_EOL);
+$client = new swoole_client(SWOOLE_SOCK_TCP);
 
-$res = $client->readFile($remoteFileId, 3, 3);
-if (!$res) {
-    print_r(Error::$errMsg . PHP_EOL);
+//连接到服务器
+if (!$client->connect('127.0.0.1', 9501))
+{
+    print_r('connect error' . PHP_EOL);
     exit;
 }
-print_r($res);
+//向服务器发送数据
+if (!$client->send(json_encode($data))) {
+    print_r('send error' . PHP_EOL);
+    exit;
+}
