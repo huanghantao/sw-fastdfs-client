@@ -9,16 +9,16 @@ class Client
     const DEFAULT_HOST = "127.0.0.1";
     const DEFAULT_PORT = 22122;
 
-    static $tracker;
-    static $host;
-    static $port;
+    private $tracker;
+    private $host;
+    private $port;
     private $table;
 
     public function __construct($host, $port)
     {
-        SELF::$host = $host;
-        SELF::$port = $port;
-        SELF::$tracker = new Tracker($host, $port);
+        $this->host = $host;
+        $this->port = $port;
+        $this->tracker = new Tracker($host, $port);
         $table = new \Swoole\Table(1024);
         $table->column('groupName', \Swoole\Table::TYPE_STRING, 64);
         $table->create();
@@ -27,7 +27,7 @@ class Client
 
     public function connect()
     {
-        return SELF::$tracker->connect();
+        return $this->tracker->connect();
     }
 
     public function setGroupName($groupName)
@@ -46,7 +46,7 @@ class Client
     {
         static $storage = null;
 
-        $storageInfo = SELF::$tracker->queryStorageWithGroup($this->getGroupName());
+        $storageInfo = $this->tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }
@@ -65,7 +65,7 @@ class Client
         static $storage = null;
 
         $res = Utils::splitRemoteFileId($remoteFileId);
-        $storageInfo = SELF::$tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
@@ -82,7 +82,7 @@ class Client
     {
         static $storage = null;
 
-        $storageInfo = SELF::$tracker->queryStorageWithGroup($this->getGroupName());
+        $storageInfo = $this->tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }
@@ -100,7 +100,7 @@ class Client
         static $storage = null;
 
         $res = Utils::splitRemoteFileId($remoteFileId);
-        $storageInfo = SELF::$tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
@@ -118,7 +118,7 @@ class Client
         static $storage = null;
 
         $res = Utils::splitRemoteFileId($remoteFileId);
-        $storageInfo = SELF::$tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
+        $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }

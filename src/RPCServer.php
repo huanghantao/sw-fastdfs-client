@@ -13,9 +13,8 @@ class RPCServer
     const TASK_WORKER_NUM = 15; // max connection num
     const TRACKER_SERVER_HOST = '127.0.0.1';
     const TRACKER_SERVER_PORT = 22122;
-    const DEFAULT_GROUP = 'wechat';
 
-    static $client;
+    private $client;
 
     private $serv = null;
     private $logFile = '/tmp/tracker_pool.log';
@@ -46,8 +45,8 @@ class RPCServer
 
     public function connectTrackerServer()
     {
-        SELF::$client = new Client(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT);
-        if (!SELF::$client->connect()) {
+        $this->client = new Client(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT);
+        if (!$this->client->connect()) {
             return false;
         }
 
@@ -72,7 +71,7 @@ class RPCServer
     public function onTask($serv, $task_id, $from_id, $data)
     {
         $data = json_decode($data, true);
-        $content = call_user_func_array([SELF::$client, $data['method']], $data['params']);
+        $content = call_user_func_array([$this->client, $data['method']], $data['params']);
 
         if (!$content) {
             return Error::$errMsg . PHP_EOL;
