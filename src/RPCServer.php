@@ -46,7 +46,7 @@ class RPCServer
 
     public function connectTrackerServer()
     {
-        SELF::$client = new Client(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT, SELF::DEFAULT_GROUP);
+        SELF::$client = new Client(SELF::TRACKER_SERVER_HOST, SELF::TRACKER_SERVER_PORT);
         if (!SELF::$client->connect()) {
             return false;
         }

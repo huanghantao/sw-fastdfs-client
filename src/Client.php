@@ -12,14 +12,17 @@ class Client
     static $tracker;
     static $host;
     static $port;
-    static $groupName;
+    private $table;
 
-    public function __construct($host, $port, $groupName)
+    public function __construct($host, $port)
     {
         SELF::$host = $host;
         SELF::$port = $port;
-        SELF::$groupName = $groupName;
-        SELF::$tracker = new Tracker($host, $port, $groupName);
+        SELF::$tracker = new Tracker($host, $port);
+        $table = new \Swoole\Table(1024);
+        $table->column('groupName', \Swoole\Table::TYPE_STRING, 64);
+        $table->create();
+        $this->table = $table;
     }
 
     public function connect()
@@ -29,15 +32,21 @@ class Client
 
     public function setGroupName($groupName)
     {
-        SELF::$groupName = $groupName;
+        $this->table->set('1', ['groupName' => $groupName]);
         return true;
+    }
+
+    public function getGroupName()
+    {
+        $res = $this->table->get('1');
+        return $res['groupName'];
     }
 
     public function uploadByFilename($pathToFile)
     {
         static $storage = null;
 
-        $storageInfo = SELF::$tracker->queryStorageWithGroup(SELF::$groupName);
+        $storageInfo = SELF::$tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }
@@ -73,7 +82,7 @@ class Client
     {
         static $storage = null;
 
-        $storageInfo = SELF::$tracker->queryStorageWithGroup(SELF::$groupName);
+        $storageInfo = SELF::$tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }

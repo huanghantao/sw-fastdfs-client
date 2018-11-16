@@ -5,7 +5,7 @@ use Codinghuang\SwFastDFSClient\Error;
 
 require '../vendor/autoload.php';
 
-$client = new swoole_client(SWOOLE_SOCK_TCP);
+$client = new \Swoole\Client(SWOOLE_TCP);
 
 //连接到服务器
 if (!$client->connect('127.0.0.1', 9501))
