@@ -19,7 +19,7 @@ class Client
         $this->host = $host;
         $this->port = $port;
         $this->tracker = new Tracker($host, $port);
-        $table = new \Swoole\Table(1024);
+        $table = new \Swoole\Table(256);
         $table->column('groupName', \Swoole\Table::TYPE_STRING, 64);
         $table->create();
         $this->table = $table;
