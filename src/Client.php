@@ -13,6 +13,7 @@ class Client
     private $host;
     private $port;
     private $table;
+    private $storage;
 
     public function __construct($host, $port)
     {
@@ -23,6 +24,7 @@ class Client
         $table->column('groupName', \Swoole\Table::TYPE_STRING, 64);
         $table->create();
         $this->table = $table;
+        $this->storage = null;
     }
 
     public function connect()
@@ -44,90 +46,80 @@ class Client
 
     public function uploadByFilename($pathToFile)
     {
-        static $storage = null;
-
         $storageInfo = $this->tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }
-        if ($storage === null) {
-            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
-            if (!$storage->connect()) {
+        if ($this->storage === null) {
+            $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            if (!$this->storage->connect()) {
                 return false;
             }
         }
         
-        return $storage->uploadByFilename($storageInfo['storageIndex'], $pathToFile);
+        return $this->storage->uploadByFilename($storageInfo['storageIndex'], $pathToFile);
     }
 
     public function deleteFile($remoteFileId)
     {
-        static $storage = null;
-
         $res = Utils::splitRemoteFileId($remoteFileId);
         $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
-        if ($storage === null) {
-            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
-            if (!$storage->connect()) {
+        if ($this->storage === null) {
+            $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            if (!$this->storage->connect()) {
                 return false;
             }
         }
-        return $storage->deleteFile($res['groupName'], $res['remoteFilename']);
+        return $this->storage->deleteFile($res['groupName'], $res['remoteFilename']);
     }
 
     public function uploadAppenderFile($pathToFile)
     {
-        static $storage = null;
-
         $storageInfo = $this->tracker->queryStorageWithGroup($this->getGroupName());
         if ($storageInfo === false) {
             return false;
         }
-        if ($storage === null) {
-            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
-            if (!$storage->connect()) {
+        if ($this->storage === null) {
+            $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            if (!$this->storage->connect()) {
                 return false;
             }
         }
-        return $storage->uploadAppenderFile($storageInfo['storageIndex'], $pathToFile);
+        return $this->storage->uploadAppenderFile($storageInfo['storageIndex'], $pathToFile);
     }
 
     public function appendFile($content, $remoteFileId)
     {
-        static $storage = null;
-
         $res = Utils::splitRemoteFileId($remoteFileId);
         $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
-        if ($storage === null) {
-            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
-            if (!$storage->connect()) {
+        if ($this->storage === null) {
+            $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            if (!$this->storage->connect()) {
                 return false;
             }
         }
-        return $storage->appendFile($content, $res['remoteFilename']);
+        return $this->storage->appendFile($content, $res['remoteFilename']);
     }
 
     public function readFile($remoteFileId, $offset = 0, $length = 0)
     {
-        static $storage = null;
-
         $res = Utils::splitRemoteFileId($remoteFileId);
         $storageInfo = $this->tracker->queryStorageUpdate($res['groupName'], $res['remoteFilename']);
         if ($storageInfo === false) {
             return false;
         }
-        if ($storage === null) {
-            $storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
-            if (!$storage->connect()) {
+        if ($this->storage === null) {
+            $this->storage = new Storage($storageInfo['storageAddr'], $storageInfo['storagePort']);
+            if (!$this->storage->connect()) {
                 return false;
             }
         }
-        return $storage->readFile($res['groupName'], $res['remoteFilename'], $offset, $length);
+        return $this->storage->readFile($res['groupName'], $res['remoteFilename'], $offset, $length);
     }
 }
